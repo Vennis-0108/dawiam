@@ -1,0 +1,89 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+int main()
+{
+	//for integral
+	int a, b, c, d, e, f, g;
+	double error, i; // integral sum
+	//for both rule
+	int subintervals = 2;
+	//for Trapezoidal Rule
+	double t = 0.0; //Trapezoidal sum
+	double h_t; //Trapezoidal h
+	double results_t = 0.0, y0_t, yn_t; //as (function value at a) + (function value at b) in Trapezoidal
+	double x_t, y_t; //x-coordinate for the intermediate point, and function value at x in Trapezoidal
+	//for Simpson's Rule 
+	double s = 0.0; //Simpson's sum
+	double h_s; //Simpson's h
+	double results_s = 0.0;
+	double results0_s = 0.0, results1_s = 0.0, results2_s = 0.0, y0_s, yn_s;
+	//results0_s as (function value at a) + (function value at b)
+	//results1_s as the function value at x when index is even
+	//results2_s as the function value at x when index is odd
+	//y0_s and yn_s as function value at a and function value at b
+	double x_s, y_s = 0.0;
+	//x-coordinate for the intermediate point, and function value at x in Simpson's
+
+	cout << "Enter the lower limit of integration (a) : ";
+	cin >> a;
+	cout << "Enter the upper limit of integration (b) : ";
+	cin >> b;
+	cout << "Enter the acceptable error threshold: ";
+	cin >> error;
+	cout << "Enter the coefficient for x^4 (c) : ";
+	cin >> c;
+	cout << "Enter the coefficient for x^3 (d) : ";
+	cin >> d;
+	cout << "Enter the coefficient for x^2 (e) : ";
+	cin >> e;
+	cout << "Enter the coefficient for x^1 (f) : ";
+	cin >> f;
+	cout << "Enter the constant term (g) : ";
+	cin >> g;
+
+	i = (c / 5) * (pow(b, 5) - pow(a, 5)) + (d / 4) * (pow(b, 4) - pow(a, 4)) + (e / 3) * (pow(b, 3) - pow(a, 3)) + (f / 2) * (pow(b, 2) - pow(a, 2)) + (g) * (b - a);
+
+	do//Simpson's Rule
+	{
+		h_s = (b - a) / subintervals;
+		y0_s = c * pow(a, 4) + d * pow(a, 3) + e * pow(a, 2) + f * a + g;
+		yn_s = c * pow(b, 4) + d * pow(b, 3) + e * pow(b, 2) + f * b + g;
+		results0_s = y0_s + yn_s;
+
+		for (int index = 1;index < subintervals;index++)
+		{
+			x_s = a + (index * h_s);
+			y_s = c * pow(x_s, 4) + d * pow(x_s, 3) + e * pow(x_s, 2) + f * x_s + g;
+
+			switch (index % 2)
+			{
+			case 0:
+				results1_s += y_s * 2;
+				break;
+			case 1:
+				results2_s += y_s * 4;
+				break;
+			}
+
+			results_s = results0_s + results1_s + results2_s;
+		}
+
+		s = (h_s / 3) * (results_s);
+
+		if ((s - i) > error)
+			subintervals += 2;
+
+	} while ((s - i) > error);
+
+	cout << fixed << setprecision(6) << endl;
+	cout << "Exact value of the integral: " << i << endl;
+	cout << "Trapezoidal Rule: " << t << endl;
+	cout << "Simpson's Rule: " << s << endl;
+
+	system("Pause");
+	return 0;
+}
